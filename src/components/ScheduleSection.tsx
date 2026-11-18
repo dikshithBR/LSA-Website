@@ -1,0 +1,122 @@
+import { useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import {
+  SCHEDULE_BATCHES,
+  TrackCategory,
+  buildWhatsAppUrl,
+} from '../data/academyData';
+
+type FilterTab = 'all' | TrackCategory;
+
+const FILTER_TABS: { id: FilterTab; label: string }[] = [
+  { id: 'all', label: 'All Batches' },
+  { id: 'kids', label: 'Kids' },
+  { id: 'adults', label: 'Adults' },
+  { id: 'elite', label: 'Elite' },
+];
+
+export function ScheduleSection() {
+  const [selectedCategory, setSelectedCategory] = useState<FilterTab>('all');
+
+  const filteredBatches =
+    selectedCategory === 'all'
+      ? SCHEDULE_BATCHES
+      : SCHEDULE_BATCHES.filter((batch) => batch.category === selectedCategory);
+
+  return (
+    <section id="schedule" className="border-b border-white/10 bg-[#09090B] py-16 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-medium text-orange-400">Training Schedule</p>
+            <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl [text-wrap:balance]">
+              Morning & Evening Batches For Every Track
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+              Filter by age and intensity to find a court slot that fits your routine. Every batch
+              runs under structured Indonesian coaching drills.
+            </p>
+          </div>
+
+          {/* Interactive Track Filter Tabs */}
+          <div
+            role="tablist"
+            aria-label="Filter training batches by player track"
+            className="inline-flex w-fit items-center gap-1 rounded-lg border border-white/10 bg-[#121215] p-1"
+          >
+            {FILTER_TABS.map((tab) => {
+              const isSelected = selectedCategory === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => setSelectedCategory(tab.id)}
+                  className={`min-h-10 rounded-md px-3.5 py-2 text-xs font-semibold transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-orange-500 ${
+                    isSelected
+                      ? 'bg-orange-500 text-black'
+                      : 'text-zinc-300 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Batch List */}
+        <div className="mt-10 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-[#121215]">
+          {filteredBatches.map((batch) => {
+            const batchUrl = buildWhatsAppUrl(
+              `Hi Leo Shuttlers Arena (LSA), I want to book a trial for the "${batch.title}" (${batch.days}, ${batch.timeSlot}).`
+            );
+
+            return (
+              <div
+                key={batch.id}
+                className="flex flex-col justify-between gap-5 p-6 transition-colors duration-150 hover:bg-[#16161A] lg:flex-row lg:items-center"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-zinc-400">
+                    <span className="text-orange-400">{batch.categoryLabel}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{batch.ageGroup}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{batch.coachRatio}</span>
+                  </div>
+
+                  <h3 className="mt-1.5 font-display text-2xl font-bold tracking-tight text-white">
+                    {batch.title}
+                  </h3>
+
+                  <p className="mt-1.5 text-sm text-zinc-300">{batch.sessionFocus}</p>
+                </div>
+
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:gap-8 shrink-0">
+                  <div className="text-left sm:text-right">
+                    <p className="text-xs font-medium text-zinc-400">{batch.days}</p>
+                    <p className="mt-1 font-mono text-sm font-medium text-white tabular-nums">
+                      {batch.timeSlot}
+                    </p>
+                  </div>
+
+                  <a
+                    href={batchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 min-h-10 rounded-md border border-orange-500/50 bg-orange-500/10 px-4 py-2 text-xs font-semibold text-orange-400 transition-colors duration-150 hover:bg-orange-500 hover:text-black whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-orange-500"
+                  >
+                    <span>Book Slot</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
