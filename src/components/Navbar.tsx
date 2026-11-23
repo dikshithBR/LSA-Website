@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { buildWhatsAppUrl } from '../data/academyData';
+import { ACADEMY_MEDIA, buildWhatsAppUrl } from '../data/academyData';
 
 export type NavSectionId = 'home' | 'schedule' | 'pricing' | 'about';
 
@@ -28,13 +28,19 @@ export function Navbar({ activeSection }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#09090B]/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
-        {/* Zone 1: Single-line Brand Wordmark */}
+      <div className="mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
+        {/* Zone 1: Primary Brand Logo */}
         <a
           href="#home"
-          className="font-display text-2xl font-bold tracking-tight text-white whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-500"
+          aria-label="LSA — Leo Shuttlers Arena"
+          className="inline-flex items-center shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-500"
         >
-          LSA <span className="text-orange-500">·</span> Leo Shuttlers Arena
+          <img
+            src={ACADEMY_MEDIA.logo.src}
+            alt={ACADEMY_MEDIA.logo.alt}
+            referrerPolicy="no-referrer"
+            className="h-11 w-auto object-contain sm:h-12"
+          />
         </a>
 
         {/* Zone 2: 4 Clean Single-Line Nav Links */}

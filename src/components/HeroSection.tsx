@@ -20,21 +20,28 @@ export function HeroSection() {
           {/* Left Focal Copy */}
           <div className="flex flex-col justify-between lg:col-span-6">
             <div>
+              <img
+                src={ACADEMY_MEDIA.logo.src}
+                alt={ACADEMY_MEDIA.logo.alt}
+                referrerPolicy="no-referrer"
+                className="mb-6 h-16 w-auto object-contain sm:h-20"
+              />
+
               <p className="text-sm font-medium tracking-wide text-orange-400">
-                Indonesian Coaching · Structured Curriculum · Passionate Coaches
+                Passionate Coaches · Structured Curriculum · Indonesian Coaches
               </p>
 
               <h1
                 style={{ fontSize: 'clamp(2.5rem, 4.6vw, 4.25rem)' }}
-                className="mt-4 font-display font-bold leading-[1.02] tracking-tight text-white [text-wrap:balance]"
+                className="mt-3 font-display font-bold leading-[1.02] tracking-tight text-white [text-wrap:balance]"
               >
-                Train With Indonesian Precision At Leo Shuttlers Arena
+                Train Smarter At Leo Shuttlers Arena
               </h1>
 
               <p className="mt-5 max-w-xl text-base leading-relaxed text-zinc-300">
-                LSA brings authentic Indonesian badminton coaching and a disciplined multi-stage
-                curriculum to players of every age—from kids learning clean fundamentals to adults
-                building match fitness and elite athletes chasing tournament podiums.
+                Whether you&apos;re picking up a racket for the first time or training for state and
+                national tournaments, LSA combines dedicated coaches, a structured training pathway,
+                and Indonesian coaching expertise to bring out your best game.
               </p>
             </div>
 
@@ -108,8 +115,8 @@ export function HeroSection() {
               </h2>
             </div>
             <p className="max-w-md text-sm text-zinc-400">
-              No aimless knocking around. Every session combines Indonesian court craft, measurable
-              progression, and coaches who care deeply about your form.
+              No aimless knocking around. Every session combines dedicated coaching, measurable
+              progression, and disciplined court craft.
             </p>
           </div>
 

@@ -1,31 +1,46 @@
 import heroSmashImg from '../assets/images/hero_badminton_smash_1795002268334.jpg';
 import coachTrainingImg from '../assets/images/indonesian_coach_training_1795002268636.jpg';
 import footworkDrillsImg from '../assets/images/elite_footwork_drills_1795002269010.jpg';
+import lsaLogoImg from '../assets/images/lsa_logo.png';
 
 export type TrackCategory = 'kids' | 'adults' | 'elite';
-export type BillingCycle = 'monthly' | 'quarterly';
+export type BillingCycle = 'monthly' | 'quarterly' | 'half-yearly' | 'yearly';
+
+export interface BillingCycleOption {
+  id: BillingCycle;
+  label: string;
+  shortLabel: string;
+  months: number;
+  discountPercent: number;
+  periodSuffix: string;
+}
 
 export interface ScheduleBatch {
   id: string;
   title: string;
   category: TrackCategory;
   categoryLabel: string;
-  ageGroup: string;
+  levelLabel: string;
   days: string;
-  timeSlot: string;
+  timeSlots: string[];
   sessionFocus: string;
-  coachRatio: string;
+}
+
+export interface PricingPlanOption {
+  id: string;
+  label: string;
+  sublabel: string;
+  monthlyInr: number;
 }
 
 export interface PricingTier {
   id: string;
   name: string;
-  category: TrackCategory;
   audience: string;
-  monthlyInr: number;
-  quarterlyInr: number;
-  sessionsPerWeek: string;
   description: string;
+  discountEligible: boolean;
+  defaultOptionId: string;
+  options: PricingPlanOption[];
   highlights: string[];
   featured?: boolean;
 }
@@ -52,6 +67,10 @@ export function buildWhatsAppUrl(message: string): string {
 }
 
 export const ACADEMY_MEDIA = {
+  logo: {
+    src: lsaLogoImg,
+    alt: 'LSA — Leo Shuttlers Arena logo',
+  },
   heroSmash: {
     src: heroSmashImg,
     alt: 'Badminton athlete executing an overhead jump smash inside Leo Shuttlers Arena',
@@ -67,167 +86,279 @@ export const ACADEMY_MEDIA = {
 };
 
 export const HERO_PROOF_STRIP = [
-  { label: 'Coaching Lineage', value: 'Indonesian Head Coaches' },
-  { label: 'Training Tracks', value: 'Kids · Adults · Elite' },
+  { label: 'Coaching Team', value: 'Passionate & Hands-On' },
   { label: 'Methodology', value: '4-Stage Curriculum' },
-  { label: 'Court Schedule', value: 'Morning & Evening' },
+  { label: 'Training Tracks', value: 'Kids · Adults · Elite' },
+  { label: 'International Edge', value: 'Indonesian Coaches' },
 ];
 
 export const ACADEMY_PILLARS: AcademyPillar[] = [
   {
     index: '01.',
-    title: 'Indonesian Coaching Lineage',
+    title: 'Passionate Coaches',
     description:
-      'Train under coaches steeped in Indonesia’s high-tempo badminton tradition—emphasizing deceptive wrist work, fluid court recovery, and fearless net control.',
-    metric: 'Max 6 Players / Court',
+      'Hands-on mentors who step onto the court with you every session—correcting habits in real time and guiding every age group with genuine care and energy.',
+    metric: 'Kids · Adults · Elite',
   },
   {
     index: '02.',
     title: 'Structured Curriculum',
     description:
       'Every player follows a documented progression from grip mechanics and six-corner footwork to multi-shuttle speed drills and tournament match tactics.',
-    metric: '12-Week Skill Audits',
+    metric: '4-Stage Pathway',
   },
   {
     index: '03.',
-    title: 'Passionate Coaches',
+    title: 'Indonesian Coaches',
     description:
-      'Hands-on mentors who step onto the court with you every session—correcting micro-habits in real time and pushing every age group with genuine care.',
-    metric: 'Kids · Adults · Elite',
+      'Strengthened by experienced Indonesian coaches who bring sharp wrist mechanics, deceptive net play, and proven high-tempo court drills to our training floor.',
+    metric: 'International Experience',
   },
 ];
 
 export const SCHEDULE_BATCHES: ScheduleBatch[] = [
   {
-    id: 'kids-foundation-eve',
-    title: 'Junior Foundation Batch',
+    id: 'kids-beginners-weekday',
+    title: 'Kids Beginners — Weekday',
     category: 'kids',
     categoryLabel: 'Kids',
-    ageGroup: 'Ages 6–11 yrs',
-    days: 'Mon · Wed · Fri',
-    timeSlot: '04:30 PM – 05:45 PM',
-    sessionFocus: 'Basic grip, coordination, footwork rhythm, and shuttle feeding',
-    coachRatio: '1:6 Coach Ratio',
+    levelLabel: 'Beginners',
+    days: 'Mon – Fri',
+    timeSlots: ['04:00 PM – 05:00 PM', '05:00 PM – 06:00 PM'],
+    sessionFocus: 'Basic grip, coordination, footwork rhythm, and foundational shuttle feeding',
   },
   {
-    id: 'kids-development-wknd',
-    title: 'Junior Development & Weekend',
+    id: 'kids-beginners-weekend',
+    title: 'Kids Beginners — Weekend',
     category: 'kids',
     categoryLabel: 'Kids',
-    ageGroup: 'Ages 10–15 yrs',
-    days: 'Tue · Thu · Sat · Sun',
-    timeSlot: '05:45 PM – 07:00 PM',
-    sessionFocus: 'Stroke mechanics, net tumbling, clears, and structured match play',
-    coachRatio: '1:6 Coach Ratio',
+    levelLabel: 'Beginners',
+    days: 'Sat – Sun',
+    timeSlots: ['11:00 AM – 12:00 PM'],
+    sessionFocus: 'Weekend fundamentals, movement balance, serve mechanics, and guided rallies',
   },
   {
-    id: 'adults-morning-fitness',
-    title: 'Adult Morning Power Batch',
+    id: 'kids-intermediate-weekday',
+    title: 'Kids Intermediate — Weekday',
+    category: 'kids',
+    categoryLabel: 'Kids',
+    levelLabel: 'Intermediate',
+    days: 'Mon – Fri',
+    timeSlots: ['05:00 AM – 07:00 AM', '04:00 PM – 06:00 PM', '05:00 PM – 07:00 PM'],
+    sessionFocus: '2-hour structured stroke progression, multi-shuttle speed, and match play',
+  },
+  {
+    id: 'adults-weekday',
+    title: 'Adults — Weekday Batches',
     category: 'adults',
     categoryLabel: 'Adults',
-    ageGroup: 'Ages 17+ yrs',
-    days: 'Mon to Fri',
-    timeSlot: '06:30 AM – 07:45 AM',
-    sessionFocus: 'High-calorie footwork, doubles rotation, defensive lifts, and conditioning',
-    coachRatio: '1:6 Coach Ratio',
+    levelLabel: 'All Skill Levels',
+    days: 'Mon – Fri',
+    timeSlots: [
+      '07:00 AM – 08:00 AM',
+      '08:00 AM – 09:00 AM',
+      '06:00 PM – 07:00 PM',
+      '07:00 PM – 08:00 PM',
+    ],
+    sessionFocus: 'Morning and evening technique coaching, doubles rotation, footwork, and court fitness',
   },
   {
-    id: 'adults-evening-technique',
-    title: 'Adult Evening Technique & Sparring',
+    id: 'adults-weekend',
+    title: 'Adults — Weekend Batch',
     category: 'adults',
     categoryLabel: 'Adults',
-    ageGroup: 'Ages 17+ yrs',
-    days: 'Mon · Wed · Fri',
-    timeSlot: '07:30 PM – 08:45 PM',
-    sessionFocus: 'Smash angles, drop consistency, serve-return patterns, and live games',
-    coachRatio: '1:6 Coach Ratio',
+    levelLabel: 'All Skill Levels',
+    days: 'Sat – Sun',
+    timeSlots: ['11:00 AM – 12:00 PM'],
+    sessionFocus: 'Weekend stroke refinement, defensive drills, and coached matchplay',
   },
   {
-    id: 'adults-weekend-club',
-    title: 'Adult Weekend Tactical Sessions',
-    category: 'adults',
-    categoryLabel: 'Adults',
-    ageGroup: 'Ages 17+ yrs',
-    days: 'Sat & Sun',
-    timeSlot: '07:30 AM – 09:00 AM',
-    sessionFocus: 'Doubles partnership strategy, multi-shuttle defense, and coached sets',
-    coachRatio: '1:6 Coach Ratio',
-  },
-  {
-    id: 'elite-morning-hp',
-    title: 'Elite Morning High-Performance',
+    id: 'elite-morning',
+    title: 'Elite — Morning High-Performance',
     category: 'elite',
     categoryLabel: 'Elite',
-    ageGroup: 'State & National Track',
-    days: 'Mon to Sat',
-    timeSlot: '05:30 AM – 07:30 AM',
-    sessionFocus: 'Indonesian multi-shuttle speed, jump smash timing, and explosive recovery',
-    coachRatio: '1:4 Coach Ratio',
+    levelLabel: 'Competitive Track',
+    days: 'Mon – Sat',
+    timeSlots: ['05:00 AM – 07:00 AM'],
+    sessionFocus: 'High-tempo multi-shuttle speed, explosive court recovery, and conditioning',
   },
   {
-    id: 'elite-evening-matchplay',
-    title: 'Elite Evening Match & Conditioning',
+    id: 'elite-midday',
+    title: 'Elite — Midday Intensive',
     category: 'elite',
     categoryLabel: 'Elite',
-    ageGroup: 'Tournament Players',
-    days: 'Mon to Sat',
-    timeSlot: '04:00 PM – 06:30 PM',
-    sessionFocus: 'Pressure match simulation, video stroke review, and tournament tapering',
-    coachRatio: '1:4 Coach Ratio',
+    levelLabel: 'Competitive Track',
+    days: 'Mon – Fri',
+    timeSlots: ['10:00 AM – 01:00 PM'],
+    sessionFocus: '3-hour tournament preparation, tactical sparring sets, deception, and match simulation',
+  },
+];
+
+export const BILLING_CYCLES: BillingCycleOption[] = [
+  {
+    id: 'monthly',
+    label: 'Monthly',
+    shortLabel: 'Monthly',
+    months: 1,
+    discountPercent: 0,
+    periodSuffix: '/ month',
+  },
+  {
+    id: 'quarterly',
+    label: 'Quarterly · 10% Off',
+    shortLabel: 'Quarterly (3 Months)',
+    months: 3,
+    discountPercent: 10,
+    periodSuffix: '/ 3 mos',
+  },
+  {
+    id: 'half-yearly',
+    label: 'Half-Yearly · 15% Off',
+    shortLabel: 'Half-Yearly (6 Months)',
+    months: 6,
+    discountPercent: 15,
+    periodSuffix: '/ 6 mos',
+  },
+  {
+    id: 'yearly',
+    label: 'Yearly · 25% Off',
+    shortLabel: 'Yearly (12 Months)',
+    months: 12,
+    discountPercent: 25,
+    periodSuffix: '/ year',
   },
 ];
 
 export const PRICING_TIERS: PricingTier[] = [
   {
-    id: 'kids-tier',
-    name: 'Kids Foundation',
-    category: 'kids',
-    audience: 'Ages 6–15 yrs · Beginner to Intermediate',
-    monthlyInr: 3500,
-    quarterlyInr: 9200,
-    sessionsPerWeek: '3 Sessions / Week',
+    id: 'beginners',
+    name: 'Beginners',
+    audience: 'Kids · Foundation Track',
     description:
-      'Built to instill clean Indonesian grip habits, balance, and court discipline from day one.',
+      'Structured grip, footwork rhythm, and stroke fundamentals taught with patient, hands-on coaching.',
+    discountEligible: true,
+    defaultOptionId: 'beg-3d',
+    options: [
+      {
+        id: 'beg-2d',
+        label: '2 Days / Week',
+        sublabel: 'Flexible starter frequency',
+        monthlyInr: 2800,
+      },
+      {
+        id: 'beg-3d',
+        label: '3 Days / Week',
+        sublabel: 'Balanced weekly progression',
+        monthlyInr: 3500,
+      },
+      {
+        id: 'beg-5d',
+        label: '5 Days / Week',
+        sublabel: 'Accelerated foundation building',
+        monthlyInr: 4500,
+      },
+    ],
     highlights: [
-      'Structured 4-stage youth skill progression',
-      '6:1 maximum student-to-coach court ratio',
-      'Quarterly footwork & stroke assessment report',
-      'Feather & synthetic shuttle drills included',
+      'Quarterly 10% · Half-Yearly 15% · Yearly 25% off',
+      'Clean grip, split-step footwork, and shuttle feeding',
+      'Direct coach supervision on every court',
     ],
   },
   {
-    id: 'adults-tier',
-    name: 'Adults Coaching & Fitness',
-    category: 'adults',
-    audience: 'Ages 17+ yrs · All Skill Levels',
-    monthlyInr: 4500,
-    quarterlyInr: 11800,
-    sessionsPerWeek: '4 Sessions / Week',
+    id: 'intermediate',
+    name: 'Intermediate',
+    audience: 'Kids · Skill Progression',
     description:
-      'Structured coaching that blends sharp technique correction with serious badminton conditioning.',
-    highlights: [
-      'Morning or evening flexible batch access',
-      'Doubles rotation, net kills, and backhand clears',
-      'High-intensity court agility & endurance blocks',
-      'Coached matchplay every Friday & weekend',
-    ],
+      'Higher court volume focused on multi-shuttle speed, tactical rally building, and matchplay.',
+    discountEligible: true,
+    defaultOptionId: 'int-3d',
     featured: true,
+    options: [
+      {
+        id: 'int-3d',
+        label: '3 Days / Week',
+        sublabel: 'Structured mid-week & drill focus',
+        monthlyInr: 5500,
+      },
+      {
+        id: 'int-5d',
+        label: '5 Days / Week',
+        sublabel: 'Full weekday progression track',
+        monthlyInr: 7000,
+      },
+    ],
+    highlights: [
+      'Quarterly 10% · Half-Yearly 15% · Yearly 25% off',
+      '2-hour structured stroke & multi-shuttle speed blocks',
+      'Guided matchplay and periodic skill reviews',
+    ],
   },
   {
-    id: 'elite-tier',
-    name: 'Elite High-Performance',
-    category: 'elite',
-    audience: 'Competitive & Tournament Athletes',
-    monthlyInr: 8500,
-    quarterlyInr: 22500,
-    sessionsPerWeek: '6 Sessions / Week',
+    id: 'adults',
+    name: 'Adults',
+    audience: 'Ages 17+ yrs · Fitness & Technique',
     description:
-      'Full-intensity Indonesian academy regimen engineered for ranking tournaments and peak match stamina.',
+      'Structured morning, evening, and weekend coaching combining technique correction with serious court fitness.',
+    discountEligible: false,
+    defaultOptionId: 'adult-3d',
+    options: [
+      {
+        id: 'adult-wknd',
+        label: 'Weekend Batch',
+        sublabel: 'Sat & Sun coached sessions',
+        monthlyInr: 3000,
+      },
+      {
+        id: 'adult-3d',
+        label: '3 Days / Week',
+        sublabel: 'Weekday morning or evening slots',
+        monthlyInr: 4500,
+      },
+      {
+        id: 'adult-5d',
+        label: '5 Days / Week',
+        sublabel: 'Full weekday coaching & conditioning',
+        monthlyInr: 6000,
+      },
+    ],
     highlights: [
-      '4:1 maximum elite athlete-to-coach ratio',
-      'Daily multi-shuttle speed & deception drills',
-      'Dedicated sparring sets & tactical match plans',
-      'Bi-weekly physical & tactical benchmark reviews',
+      'Standard monthly fee · Weekday & weekend slots',
+      'Doubles rotation, backhand clears, and footwork drills',
+      'Coached rally play and game conditioning',
+    ],
+  },
+  {
+    id: 'elite',
+    name: 'Elite',
+    audience: 'Competitive & Tournament Athletes',
+    description:
+      'Full-intensity high-performance regimen engineered for state and national ranking tournaments.',
+    discountEligible: false,
+    defaultOptionId: 'elite-1s',
+    options: [
+      {
+        id: 'elite-1s',
+        label: 'One Session a Day',
+        sublabel: 'Morning or midday high-performance court',
+        monthlyInr: 14500,
+      },
+      {
+        id: 'elite-2s',
+        label: 'Both Sessions a Day',
+        sublabel: 'Morning + midday full daily training',
+        monthlyInr: 18500,
+      },
+      {
+        id: 'elite-acc',
+        label: 'Full Residential (Both Sessions + Stay & Food)',
+        sublabel: 'Complete training, accommodation & athlete meals',
+        monthlyInr: 28500,
+      },
+    ],
+    highlights: [
+      'Standard monthly fee · Multi-month discounts not applicable',
+      'Daily multi-shuttle speed, deception, and sparring',
+      'Dedicated tournament preparation & residential option',
     ],
   },
 ];
@@ -237,7 +368,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
     step: '01',
     title: 'Grip, Stance & Split-Step Rhythm',
     summary:
-      'Establishing relaxed forehand/backhand grip transitions and the Indonesian split-step timing that unlocks effortless court coverage.',
+      'Establishing relaxed forehand and backhand grip transitions with balanced split-step timing that unlocks effortless court coverage.',
     duration: 'Weeks 1–4',
   },
   {
@@ -251,7 +382,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
     step: '03',
     title: 'Multi-Shuttle Speed & Deception',
     summary:
-      'High-volume Indonesian feeding drills targeting late wrist holds, cross-court slices, and rapid transitions from defense to attack.',
+      'High-volume feeding drills targeting late wrist holds, cross-court slices, and rapid transitions from defense to attack.',
     duration: 'Weeks 11–18',
   },
   {

@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { PHONE_DISPLAY, buildWhatsAppUrl } from '../data/academyData';
+import { ACADEMY_MEDIA, PHONE_DISPLAY, buildWhatsAppUrl } from '../data/academyData';
 
 export function Footer() {
   const whatsappHref = buildWhatsAppUrl(
@@ -13,13 +13,19 @@ export function Footer() {
           <div>
             <a
               href="#home"
-              className="font-display text-2xl font-bold tracking-tight text-white focus-visible:outline-2 focus-visible:outline-orange-500"
+              aria-label="LSA — Leo Shuttlers Arena"
+              className="inline-flex items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-500"
             >
-              LSA <span className="text-orange-500">·</span> Leo Shuttlers Arena
+              <img
+                src={ACADEMY_MEDIA.logo.src}
+                alt={ACADEMY_MEDIA.logo.alt}
+                referrerPolicy="no-referrer"
+                className="h-12 w-auto object-contain"
+              />
             </a>
-            <p className="mt-2 max-w-md text-sm text-zinc-400">
-              Indonesian coaching lineage, structured curriculum, and passionate coaches for kids,
-              adults, and elite players.
+            <p className="mt-3 max-w-md text-sm text-zinc-400">
+              Passionate coaches, a structured curriculum, and Indonesian coaching expertise for
+              kids, adults, and elite players.
             </p>
           </div>
 

@@ -9,7 +9,7 @@ import { SmartImage } from './SmartImage';
 
 export function AboutSection() {
   const coachChatUrl = buildWhatsAppUrl(
-    'Hi Leo Shuttlers Arena (LSA), I would like to learn more about your Indonesian coaching curriculum and coaches.'
+    'Hi Leo Shuttlers Arena (LSA), I would like to learn more about your coaching curriculum and coaches.'
   );
 
   return (
@@ -21,20 +21,19 @@ export function AboutSection() {
             <div>
               <p className="text-sm font-medium text-orange-400">About Leo Shuttlers Arena</p>
               <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl [text-wrap:balance]">
-                Indonesian Badminton Craft. Taught With Relentless Passion.
+                Passionate Coaching. Structured Progression. Built For Real Growth.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-zinc-300">
-                Indonesia has shaped world badminton for generations through deceptive wrist speed,
-                balanced footwork, and calm tactical intelligence. At{' '}
-                <strong className="font-semibold text-white">Leo Shuttlers Arena (LSA)</strong>, we
-                built our academy around that exact DNA—bringing experienced Indonesian coaching
-                straight to kids, adults, and competitive players.
+                At <strong className="font-semibold text-white">Leo Shuttlers Arena (LSA)</strong>,
+                we believe great badminton players are built through disciplined fundamentals,
+                consistent feedback, and coaches who genuinely invest in every session—across kids,
+                adults, and competitive elite tracks.
               </p>
               <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                Our motto is simple: great players aren’t built by random rallies. They are built
-                through a <span className="text-white">structured curriculum</span> delivered by{' '}
-                <span className="text-white">passionate coaches</span> who care about every footwork
-                step, grip adjustment, and recovery habit.
+                Our academy combines <span className="text-white">passionate coaches</span>, a clear{' '}
+                <span className="text-white">structured curriculum</span>, and the international
+                experience of <span className="text-white">Indonesian coaches</span>—helping every
+                player refine their grip, footwork, and match composure step by step.
               </p>
             </div>
 
@@ -62,7 +61,7 @@ export function AboutSection() {
               <SmartImage
                 src={ACADEMY_MEDIA.indonesianCoach.src}
                 alt={ACADEMY_MEDIA.indonesianCoach.alt}
-                fallbackLabel="Indonesian Head Coaching"
+                fallbackLabel="Hands-On Court Coaching"
                 className="h-full w-full object-cover lg:h-full"
               />
               <div
@@ -70,7 +69,7 @@ export function AboutSection() {
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#09090B]/85 via-transparent to-transparent"
               />
               <p className="absolute inset-x-0 bottom-0 p-4 text-xs font-medium text-white">
-                Hands-on grip & wrist mechanics led by Indonesian coaches
+                Hands-on grip, wrist, and technique mentoring on court
               </p>
             </div>
 

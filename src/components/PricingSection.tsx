@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowUpRight, Check, Copy } from 'lucide-react';
 import {
+  BILLING_CYCLES,
   BillingCycle,
   PHONE_DISPLAY,
   PRICING_TIERS,
@@ -10,7 +11,17 @@ import {
 
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() =>
+    Object.fromEntries(PRICING_TIERS.map((tier) => [tier.id, tier.defaultOptionId]))
+  );
   const [copiedPhone, setCopiedPhone] = useState(false);
+
+  const activeCycle =
+    BILLING_CYCLES.find((cycle) => cycle.id === billingCycle) ?? BILLING_CYCLES[0];
+
+  const handleSelectOption = (tierId: string, optionId: string) => {
+    setSelectedOptions((prev) => ({ ...prev, [tierId]: optionId }));
+  };
 
   const handleCopyNumber = async () => {
     try {
@@ -29,64 +40,68 @@ export function PricingSection() {
   return (
     <section id="pricing" className="border-b border-white/10 bg-[#0D0D10] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-sm font-medium text-orange-400">Coaching Fees in INR</p>
             <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl [text-wrap:balance]">
-              Transparent Plans Across Every Age Track
+              Transparent Plans Across All Four Tracks
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-400">
-              All coaching packages include structured court drills, shuttle feeding, and direct
-              Indonesian coaching supervision.
+              Select a billing period to preview exact multi-month savings. Quarterly (10%),
+              Half-Yearly (15%), and Yearly (25%) discounts apply to Beginners and Intermediate
+              programs only.
             </p>
           </div>
 
           {/* Billing Cycle Segmented Toggle */}
-          <div className="flex flex-col items-start md:items-end gap-2">
+          <div className="flex flex-col items-start lg:items-end gap-2">
             <div
               role="group"
               aria-label="Select billing cycle"
-              className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-[#121215] p-1"
+              className="flex flex-wrap items-center gap-1 rounded-lg border border-white/10 bg-[#121215] p-1"
             >
-              <button
-                type="button"
-                aria-pressed={billingCycle === 'monthly'}
-                onClick={() => setBillingCycle('monthly')}
-                className={`min-h-10 rounded-md px-4 py-2 text-xs font-semibold transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-orange-500 ${
-                  billingCycle === 'monthly'
-                    ? 'bg-orange-500 text-black'
-                    : 'text-zinc-300 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                type="button"
-                aria-pressed={billingCycle === 'quarterly'}
-                onClick={() => setBillingCycle('quarterly')}
-                className={`min-h-10 rounded-md px-4 py-2 text-xs font-semibold transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-orange-500 ${
-                  billingCycle === 'quarterly'
-                    ? 'bg-orange-500 text-black'
-                    : 'text-zinc-300 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                Quarterly · Save 12%
-              </button>
+              {BILLING_CYCLES.map((cycle) => {
+                const isSelected = billingCycle === cycle.id;
+                return (
+                  <button
+                    key={cycle.id}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => setBillingCycle(cycle.id)}
+                    className={`min-h-10 rounded-md px-3.5 py-2 text-xs font-semibold transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-orange-500 ${
+                      isSelected
+                        ? 'bg-orange-500 text-black'
+                        : 'text-zinc-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    {cycle.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* INR Pricing Cards */}
-        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* INR Pricing Cards (2x2 Balanced Grid) */}
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
           {PRICING_TIERS.map((tier) => {
-            const activePrice =
-              billingCycle === 'monthly' ? tier.monthlyInr : tier.quarterlyInr;
-            const cycleLabel = billingCycle === 'monthly' ? '/ month' : '/ quarter';
-            const savingsAmount =
-              billingCycle === 'quarterly' ? tier.monthlyInr * 3 - tier.quarterlyInr : 0;
+            const selectedOptionId = selectedOptions[tier.id] ?? tier.defaultOptionId;
+            const selectedOption =
+              tier.options.find((opt) => opt.id === selectedOptionId) ?? tier.options[0];
+
+            const applyDiscount = tier.discountEligible && activeCycle.months > 1;
+            const effectiveMonths = applyDiscount ? activeCycle.months : 1;
+            const discountFactor = applyDiscount ? (100 - activeCycle.discountPercent) / 100 : 1;
+            const selectedTotal = Math.round(
+              selectedOption.monthlyInr * effectiveMonths * discountFactor
+            );
+
+            const whatsappPlanDetail = applyDiscount
+              ? `${selectedOption.label} on the ${activeCycle.shortLabel} plan (${formatInr(selectedTotal)} after ${activeCycle.discountPercent}% off)`
+              : `${selectedOption.label} (${formatInr(selectedOption.monthlyInr)} / month)`;
 
             const joinUrl = buildWhatsAppUrl(
-              `Hi Leo Shuttlers Arena (LSA), I am interested in the "${tier.name}" plan (${formatInr(activePrice)} ${cycleLabel}). Please share batch availability.`
+              `Hi Leo Shuttlers Arena (LSA), I am interested in the ${tier.name} program — ${whatsappPlanDetail}. Please share batch availability.`
             );
 
             return (
@@ -106,9 +121,14 @@ export function PricingSection() {
                         Most Popular
                       </span>
                     )}
+                    {!tier.discountEligible && (
+                      <span className="text-zinc-400 whitespace-nowrap shrink-0">
+                        Monthly Only
+                      </span>
+                    )}
                   </div>
 
-                  <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-white">
+                  <h3 className="mt-2 font-display text-3xl font-bold tracking-tight text-white">
                     {tier.name}
                   </h3>
 
@@ -116,30 +136,100 @@ export function PricingSection() {
                     {tier.description}
                   </p>
 
-                  <div className="mt-6 border-y border-white/10 py-5">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-display text-4xl font-bold tracking-tight text-white tabular-nums">
-                        {formatInr(activePrice)}
-                      </span>
-                      <span className="text-xs font-medium text-zinc-400">{cycleLabel}</span>
-                    </div>
+                  {/* Selectable INR Fee Options */}
+                  <div
+                    role="radiogroup"
+                    aria-label={`${tier.name} coaching fee options`}
+                    className="mt-6 divide-y divide-white/10 border-y border-white/10"
+                  >
+                    {tier.options.map((option) => {
+                      const isOptionSelected = option.id === selectedOption.id;
+                      const baseTotal = option.monthlyInr * effectiveMonths;
+                      const finalTotal = Math.round(baseTotal * discountFactor);
+                      const savings = baseTotal - finalTotal;
+                      const perMonthEquivalent = Math.round(finalTotal / effectiveMonths);
 
-                    <p className="mt-1.5 text-xs text-zinc-400 tabular-nums">
-                      {tier.sessionsPerWeek}
-                      {savingsAmount > 0 && (
-                        <>
-                          <span aria-hidden="true"> · </span>
-                          <span className="text-orange-400">
-                            Save {formatInr(savingsAmount)} per quarter
-                          </span>
-                        </>
-                      )}
-                    </p>
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={isOptionSelected}
+                          onClick={() => handleSelectOption(tier.id, option.id)}
+                          className={`group flex w-full items-start justify-between gap-4 py-4 px-2 -mx-2 rounded-md text-left transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-orange-500 ${
+                            isOptionSelected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'
+                          }`}
+                        >
+                          <div className="flex items-start gap-2.5 min-w-0">
+                            <span
+                              aria-hidden="true"
+                              className={`mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors duration-150 ${
+                                isOptionSelected
+                                  ? 'border-orange-500 bg-orange-500'
+                                  : 'border-white/25 group-hover:border-white/50'
+                              }`}
+                            >
+                              {isOptionSelected && (
+                                <span className="h-1.5 w-1.5 rounded-full bg-black" />
+                              )}
+                            </span>
+                            <div className="min-w-0">
+                              <p
+                                className={`text-sm font-semibold transition-colors ${
+                                  isOptionSelected ? 'text-white' : 'text-zinc-200'
+                                }`}
+                              >
+                                {option.label}
+                              </p>
+                              <p className="mt-0.5 text-xs text-zinc-400">{option.sublabel}</p>
+                            </div>
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            <div className="flex items-baseline justify-end gap-1.5">
+                              {applyDiscount && (
+                                <span className="text-xs text-zinc-500 line-through tabular-nums">
+                                  {formatInr(baseTotal)}
+                                </span>
+                              )}
+                              <span className="font-display text-2xl font-bold tracking-tight text-white tabular-nums">
+                                {formatInr(finalTotal)}
+                              </span>
+                            </div>
+                            <p className="text-[11px] font-medium text-zinc-400 tabular-nums">
+                              {applyDiscount ? (
+                                <>
+                                  <span>{activeCycle.periodSuffix}</span>
+                                  <span aria-hidden="true"> · </span>
+                                  <span className="text-orange-400">
+                                    {formatInr(perMonthEquivalent)}/mo
+                                  </span>
+                                </>
+                              ) : (
+                                '/ month'
+                              )}
+                            </p>
+                            {applyDiscount && savings > 0 && (
+                              <p className="mt-0.5 text-[11px] text-orange-400 tabular-nums">
+                                Save {formatInr(savings)} ({activeCycle.discountPercent}% off)
+                              </p>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <ul className="mt-6 space-y-3">
+                  {!tier.discountEligible && activeCycle.months > 1 && (
+                    <p className="mt-3 text-xs text-zinc-400">
+                      Multi-month discounts apply only to Beginners & Intermediate. {tier.name}{' '}
+                      plans are billed monthly.
+                    </p>
+                  )}
+
+                  <ul className="mt-5 space-y-2.5">
                     {tier.highlights.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-sm text-zinc-200">
+                      <li key={item} className="flex items-start gap-2.5 text-sm text-zinc-300">
                         <Check
                           className="mt-0.5 h-4 w-4 shrink-0 text-orange-400"
                           aria-hidden="true"
@@ -160,8 +250,10 @@ export function PricingSection() {
                       : 'border border-white/15 bg-[#18181C] text-white hover:border-orange-500/60 hover:text-orange-400'
                   }`}
                 >
-                  <span>Join via WhatsApp</span>
-                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  <span className="truncate">
+                    Book {selectedOption.label}
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </a>
               </article>
             );
